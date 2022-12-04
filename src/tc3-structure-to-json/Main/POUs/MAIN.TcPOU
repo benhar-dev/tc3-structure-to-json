@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{b4faa51e-6519-4855-a92d-c104bbb8ac42}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	
+	// variables used for testing.
+	testVariable : MyExampleStructure;	
+	
+	// fb's needed. (You need to add TC3_XmlJson library in your references)
+	transform : FB_JsonReadWriteDataType;
+	
+	(* datatype name (this is useful to ask TwinCAT what the structure is called, as it prevents
+	   you from hard coding the name in your code.  Plus it continues to work if placed in a 
+	   library, as all structures gain the library namespace. *)
+	
+	datatypeName : STRING(100); // this needs to be big enough to take the full structure name
+	resultingJsonStringLength : UDINT; // not needed, but from this you can see how long the string will be. 
+	jsonString : STRING(1000); // this is the destination of the json
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+(* first we get the datatype name of the structure / variable.  We could hard code this, but hard coding structure
+   names in your code is not good practice, just in case you rename your structures later *)
+
+datatypeName := transform.GetDataTypeNameByAddress(SIZEOF(testVariable),ADR(testVariable));
+
+(* next we find out how big the resulting json string will be.  In the next step you will need a string of at least
+   this big to fit the json in. *)
+
+resultingJsonStringLength := transform.GetSizeJsonStringFromSymbol(datatypeName,SIZEOF(testVariable),ADR(testVariable));
+
+(* finally the transformation step.  This requires the datatype name, the size and address of the source, and the size
+   and address of the destination *)
+
+transform.CopyJsonStringFromSymbol(datatypeName,SIZEOF(testVariable), ADR(testVariable),jsonString,SIZEOF(jsonString));
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

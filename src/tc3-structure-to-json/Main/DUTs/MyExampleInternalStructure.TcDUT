@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="MyExampleInternalStructure" Id="{f86953b3-4434-47a2-8ff8-a65ba1df6b01}">
+    <Declaration><![CDATA[TYPE MyExampleInternalStructure :
+STRUCT
+	myUdint : UDINT := 999;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
